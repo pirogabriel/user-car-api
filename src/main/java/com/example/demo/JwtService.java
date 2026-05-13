@@ -3,6 +3,7 @@ package com.example.demo;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,14 @@ public class JwtService {
     @Value("${JWT_SECRET")
     private String SECRET;
 
-    private final SecretKey KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
+    private SecretKey KEY;
+
+    @PostConstruct
+    public void init() {
+        KEY = Keys.hmacShaKeyFor(
+                SECRET.getBytes(StandardCharsets.UTF_8)
+        );
+    }
 
     public String generateToken(String username, String role){
         return Jwts.builder()
